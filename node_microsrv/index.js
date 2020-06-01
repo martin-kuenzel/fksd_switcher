@@ -26,7 +26,7 @@ const runCommand = (cmd,quiet) => {
   });
 };
 
-app.get('/',(req,res)=>{
+app.get('/switch',(req,res)=>{
   let cmd = 'Kein Kommando angegeben!';
   let msg = [cmd];
   if( req.query.t ){
@@ -56,4 +56,4 @@ app.get('/',(req,res)=>{
 
 });
 
-//app.use(express.static(path.join(__dirname,'/public')));
+app.use(express.static(path.join(__dirname,'/public')));

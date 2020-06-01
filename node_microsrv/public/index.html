@@ -1,10 +1,33 @@
 <!DOCTYPE HTML>
 <html>
         <head>
-                <title>brematic switcher</title>
+          <title>brematic switcher</title>
+          <script>
+            const switchAction = () => {
+              const status = document.querySelector('#status').checked;
+              const dosen = document.querySelector('#dosen').value;
+              
+              fetch(`/switch?t=${escape(dosen)}&s=${status?1:0}`)
+                .then( () => {
+                  alert(`Schalte ${dosen} auf Status ${status ? 'on' : 'off'}`);
+                })
+                .catch((err)=> {
+                  console.log(err); 
+                  alert('Fehler bei der Kommunikation zum Backend.') 
+                });
+            };
+          </script>
         </head>
         <body>
-                <a href="#">Schalten</a>
+          <h1>FKSD - Switcher</h1>
+					<p><label>Auswahl Steckdosen:&nbsp;
+							<input id="dosen" type="text" placeholder="e.g. 25A,1B,13C" value="25A,25B">
+					</label></p>
+					<p><label>Status:&nbsp;
+							<input id="status" type="checkbox" checked>
+					</label></p>
+					<hr>
+          <button onclick="switchAction();">Schalten</button>
         </body>
 </html>
 
