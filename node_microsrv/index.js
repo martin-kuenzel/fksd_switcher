@@ -7,6 +7,11 @@ const { exec } = require("child_process");
 const PORT = process.env.PORT || 42421;
 const ADDRESS = process.env.ADDRESS || '127.0.0.1';
 
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
 
 app.listen( PORT, ADDRESS, () => console.log(`Listening on ${ADDRESS}:${PORT} ...`) )
 
@@ -30,7 +35,7 @@ app.get('/switch',(req,res)=>{
   let cmd = 'Kein Kommando angegeben!';
   let msg = [cmd];
   if( req.query.t ){
-    //console.log(req.query)
+    //console.log(req.query.s)
 
     // set state to req.query.state if 1, defaults to 0; // can only be 1 (on) or 0 (off)
     const state = req.query.s == 1 ? 1 : 0;

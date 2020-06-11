@@ -3,31 +3,100 @@
         <head>
           <title>brematic switcher</title>
           <script>
+            const logger = (opt={}) => {
+
+              clearTimeout(window._logger);
+
+              let _o = { t:"",asHTML:false,tgt:document.querySelector('#dialog div'),tsec:5};
+              Object.keys(opt).forEach( x => _o[x] = opt[x] );
+              
+              _o.tgt.classList.remove('hide');
+              
+              if(!_o.asHTML) _o.tgt.textContent = _o.t;
+              else _o.tgt.innerHTML = _o.t;
+              
+              // &emsp needs to be added, field must not be empty 
+              window._logger = setTimeout( () => { _o.tgt.innerHTML = ''; _o.tgt.classList.add('hide'); }, _o.tsec*1e3);
+            }
+
             const switchAction = () => {
               const status = document.querySelector('#status').checked;
               const dosen = document.querySelector('#dosen').value;
               
               fetch(`/switch?t=${escape(dosen)}&s=${status?1:0}`)
                 .then( () => {
-                  alert(`Schalte ${dosen} auf Status ${status ? 'on' : 'off'}`);
+                  logger({t:`Schalte ${dosen} auf Status ${status ? 'on' : 'off'}`});
                 })
                 .catch((err)=> {
                   console.log(err); 
-                  alert('Fehler bei der Kommunikation zum Backend.') 
+                  logger({t:'Fehler bei der Kommunikation zum Backend.'}) 
                 });
             };
           </script>
+          <style>
+            #container {
+              background: #ddd;
+              padding: 1rem;
+            }
+            #container .body { 
+              display: flex;
+              flex-direction: column;
+            }
+            
+            
+            #container .body .cell { max-width: 100%; }
+            
+            #container .body .cell.button { 
+              padding: .75rem; 
+              background: #000;
+              margin: 1rem;
+              text-align: center;
+              border: outset;
+              width: 150px;
+              font-weight: bold;
+              color: lightgoldenrodyellow;
+            }
+            #container .body .cell.button:hover { 
+              background: forestgreen;
+              color: beige; 
+            }
+            #container .body .cell.button label:active {}
+            
+            #dialog {
+              margin: 1.5rem;
+              text-align: center;
+              min-height: 84px;
+              height: 84px;
+            }
+            #dialog div{
+              border: solid thin forestgreen;
+              padding: .75rem;
+              padding-top: 2rem;
+              padding-bottom: 2rem;
+            }
+            /*#dialog div.hide:before {content:'0'; display: block; }*/
+            #dialog div.hide { display: none; }
+            
+          </style>
         </head>
         <body>
-          <h1>FKSD - Switcher</h1>
-					<p><label>Auswahl Steckdosen:&nbsp;
-							<input id="dosen" type="text" placeholder="e.g. 25A,1B,13C" value="25A,25B">
-					</label></p>
-					<p><label>Status:&nbsp;
-							<input id="status" type="checkbox" checked>
-					</label></p>
-					<hr>
-          <button onclick="switchAction();">Schalten</button>
+          <div id="container" class="container"><h1>FKSD - Switcher</h1>
+            <div class="body">
+          
+					    <div class="cell"><label>Auswahl Steckdosen:&nbsp;
+							    <input id="dosen" type="text" placeholder="e.g. 25A,1B,13C" value="25A,25B">
+					    </label></div>
+					    
+					    <div class="cell"><label>Status:&nbsp;
+							    <input id="status" type="checkbox" checked>
+					    </label></div>
+					    
+					    <div class="cell button" onclick="switchAction();"><label>Schalten</label></div>
+					    
+					    <div class="cell dialog" id="dialog"><div class="hide"></div></div>
+					    
+            </div>
+          </div>
         </body>
 </html>
 
